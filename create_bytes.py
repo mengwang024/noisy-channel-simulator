@@ -39,8 +39,8 @@ def find_parity_pos(block_size):
     # parity_nums = math.floor(math.log(block_size, 2))
     do = True
     r = 2
-    while (do):
-        if block_size + 2 < 2 ** r:
+    while do:
+        if block_size + r < 2 ** r:
             do = False
         r += 1
     parity_nums = r
@@ -52,28 +52,53 @@ def find_parity_pos(block_size):
 
         parity_nums -= 1
 
+    for i in range(parity_nums):
+        parity_pos.append(2 ** i - 1)
+
     # parity pos are ready !
     return parity_pos
+
+
+def create_parity(parity_pos, full_data):
+    mstr = ''
+    new_data = []
+    for i in range(len(full_data)):
+        if i in parity_pos:
+            new_data.append("0")
+        else:
+            new_data.append(full_data[len(full_data) - 1 - i])
+
+    for pos in parity_pos:
+
+        xor = 0
+        for i in range(len(full_data)):
+
+            leni = len(bin(i + 1))
+            if bin(i + 1)[leni - pos - 1] == '1':
+
+                xor = xor ^ int(full_data[len(full_data) - 1 - i])
+
+        new_data[pos] = xor
+
+    for i in range(len(new_data)):
+        mstr = str(new_data[i]) + mstr
+
+    return mstr
+
 
 
 def add_parity_to_data(chunked_data, parity_pos):
     ripe_data = []
 
     for data in chunked_data:
-        raw = ""
+        full_data = ""
         for i in range(len(data) + len(parity_pos)):
             if i in parity_pos:
-                raw = str(i) + raw
+                full_data = '0' + full_data
             else:
-                raw = data[len(data)-1] + raw
+                full_data = data[len(data) - 1] + full_data
                 data = data[:len(data) - 1]
 
-        ripe_data.append(raw)
+        ripe_data.append(create_parity(parity_pos, full_data))
 
     return ripe_data
-
-
-
-
-
-
