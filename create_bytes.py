@@ -68,7 +68,6 @@ def create_parity(parity_pos, full_data):
         for i in range(len(full_data)):
 
             leni = len(bin(i + 1))
-            print math.log(pos+1, 2)
             if bin(i + 1)[leni - 1 - int(math.log(pos+1, 2))] == '1':
 
                 xor = xor ^ int(full_data[len(full_data) - 1 - i])
