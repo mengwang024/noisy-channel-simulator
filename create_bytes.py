@@ -1,5 +1,4 @@
-import random, math
-
+import random,math
 
 def create_bytes(num_bytes=1000000):
     raw_data = ""
@@ -38,19 +37,14 @@ def find_parity_pos(block_size):
 
     # parity_nums = math.floor(math.log(block_size, 2))
     do = True
-    r = 2
+    r = 1
     while do:
+        r += 1
         if block_size + r < 2 ** r:
             do = False
-        r += 1
+
     parity_nums = r
-
     parity_pos = []
-
-    while parity_nums >= 0:
-        parity_pos.append(2 ** parity_nums - 1)
-
-        parity_nums -= 1
 
     for i in range(parity_nums):
         parity_pos.append(2 ** i - 1)
@@ -74,7 +68,8 @@ def create_parity(parity_pos, full_data):
         for i in range(len(full_data)):
 
             leni = len(bin(i + 1))
-            if bin(i + 1)[leni - pos - 1] == '1':
+            print math.log(pos+1, 2)
+            if bin(i + 1)[leni - 1 - int(math.log(pos+1, 2))] == '1':
 
                 xor = xor ^ int(full_data[len(full_data) - 1 - i])
 
@@ -86,7 +81,6 @@ def create_parity(parity_pos, full_data):
     return mstr
 
 
-
 def add_parity_to_data(chunked_data, parity_pos):
     ripe_data = []
 
@@ -96,8 +90,9 @@ def add_parity_to_data(chunked_data, parity_pos):
             if i in parity_pos:
                 full_data = '0' + full_data
             else:
-                full_data = data[len(data) - 1] + full_data
-                data = data[:len(data) - 1]
+                if len(data) - 1 != -1:
+                    full_data = data[len(data) - 1] + full_data
+                    data = data[:len(data) - 1]
 
         ripe_data.append(create_parity(parity_pos, full_data))
 
